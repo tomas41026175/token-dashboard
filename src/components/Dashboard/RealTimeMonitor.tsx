@@ -1,4 +1,4 @@
-import { Card, Row, Col, Statistic, Progress, Space, Typography } from 'antd';
+import { Card, Row, Col, Statistic, Progress, Space, Typography, Alert } from 'antd';
 import {
   RiseOutlined,
   DollarOutlined,
@@ -7,6 +7,7 @@ import {
 } from '@ant-design/icons';
 import { useTimeRangeData } from '@/hooks/useFilteredTokenUsage';
 import { useRealtimeTokenUsage } from '@/hooks/useRealtimeTokenUsage';
+import { useAlertNotification } from '@/hooks/useAlertCheck';
 import { useSettingsStore } from '@/store';
 
 const { Text } = Typography;
@@ -14,6 +15,9 @@ const { Text } = Typography;
 export default function RealTimeMonitor() {
   // 啟用 Realtime 訂閱
   useRealtimeTokenUsage();
+
+  // 檢查警示狀態並發送通知
+  const alertStatus = useAlertNotification();
 
   const { today, week, month } = useTimeRangeData();
   const { defaultMonthlyLimitUsd, defaultThresholdPercentage } =
@@ -34,6 +38,17 @@ export default function RealTimeMonitor() {
 
   return (
     <Space direction="vertical" size="large" style={{ width: '100%' }}>
+      {/* 警示橫幅 */}
+      {(alertStatus.isWarning || alertStatus.isError) && (
+        <Alert
+          message={alertStatus.isError ? '⚠️ 超過警示閾值' : '⚠️ 接近警示閾值'}
+          description={alertStatus.message}
+          type={alertStatus.isError ? 'error' : 'warning'}
+          showIcon
+          closable
+        />
+      )}
+
       {/* 主要統計卡片 */}
       <Row gutter={16}>
         <Col span={6}>

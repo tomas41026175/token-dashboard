@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import { Table, Tag, Space, Input, Badge } from 'antd';
+import { Table, Tag, Space, Input, Badge, Button, Dropdown } from 'antd';
+import type { MenuProps } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useFilteredTokenUsage } from '@/hooks/useFilteredTokenUsage';
 import { MOCK_SOURCES } from '@/utils/mock-data';
+import { exportToCSV, exportToJSON, exportSummaryToMarkdown } from '@/utils/export';
 import type { TokenUsage } from '@/types';
 
 const { Search } = Input;
@@ -133,16 +136,40 @@ export default function HistoryTable() {
     },
   ];
 
+  // 匯出選單
+  const exportMenuItems: MenuProps['items'] = [
+    {
+      key: 'csv',
+      label: '匯出為 CSV',
+      onClick: () => exportToCSV(filteredData),
+    },
+    {
+      key: 'json',
+      label: '匯出為 JSON',
+      onClick: () => exportToJSON(filteredData),
+    },
+    {
+      key: 'markdown',
+      label: '匯出統計報告 (Markdown)',
+      onClick: () => exportSummaryToMarkdown(filteredData),
+    },
+  ];
+
   return (
     <Space direction="vertical" size="large" style={{ width: '100%' }}>
-      {/* 搜尋列 */}
-      <Search
-        placeholder="搜尋來源或模型..."
-        allowClear
-        onSearch={setSearchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        style={{ width: 300 }}
-      />
+      {/* 工具列 */}
+      <Space>
+        <Search
+          placeholder="搜尋來源或模型..."
+          allowClear
+          onSearch={setSearchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          style={{ width: 300 }}
+        />
+        <Dropdown menu={{ items: exportMenuItems }} placement="bottomRight">
+          <Button icon={<DownloadOutlined />}>匯出資料</Button>
+        </Dropdown>
+      </Space>
 
       {/* 表格 */}
       <Table

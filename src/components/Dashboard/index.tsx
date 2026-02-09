@@ -1,10 +1,12 @@
-import { Layout, Menu, Typography, Space } from 'antd';
+import { Layout, Menu, Typography, Space, Tabs } from 'antd';
 import {
   DashboardOutlined,
   LineChartOutlined,
   DollarOutlined,
   SettingOutlined,
   HistoryOutlined,
+  BellOutlined,
+  DatabaseOutlined,
 } from '@ant-design/icons';
 import { useState } from 'react';
 import SourceSelector from './SourceSelector';
@@ -12,6 +14,8 @@ import RealTimeMonitor from './RealTimeMonitor';
 import UsageChart from '../UsageChart';
 import HistoryTable from '../HistoryTable';
 import CostAnalysis from '../CostAnalysis';
+import AlertSettings from '../AlertSettings';
+import SourceManagement from '../SourceManagement';
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -89,7 +93,29 @@ export default function Dashboard() {
             {selectedMenu === 'history' && <HistoryTable />}
             {selectedMenu === 'cost' && <CostAnalysis />}
             {selectedMenu === 'settings' && (
-              <div>設定頁面（待實作）</div>
+              <Tabs
+                defaultActiveKey="alerts"
+                items={[
+                  {
+                    key: 'alerts',
+                    label: (
+                      <span>
+                        <BellOutlined /> 警示設定
+                      </span>
+                    ),
+                    children: <AlertSettings />,
+                  },
+                  {
+                    key: 'sources',
+                    label: (
+                      <span>
+                        <DatabaseOutlined /> 來源管理
+                      </span>
+                    ),
+                    children: <SourceManagement />,
+                  },
+                ]}
+              />
             )}
           </Content>
         </Layout>
