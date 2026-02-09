@@ -4,9 +4,14 @@ import {
   LineChartOutlined,
   DollarOutlined,
   SettingOutlined,
+  HistoryOutlined,
 } from '@ant-design/icons';
 import { useState } from 'react';
 import SourceSelector from './SourceSelector';
+import RealTimeMonitor from './RealTimeMonitor';
+import UsageChart from '../UsageChart';
+import HistoryTable from '../HistoryTable';
+import CostAnalysis from '../CostAnalysis';
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -47,9 +52,14 @@ export default function Dashboard() {
                 label: '即時監控',
               },
               {
-                key: 'history',
+                key: 'charts',
                 icon: <LineChartOutlined />,
-                label: '歷史分析',
+                label: '使用量圖表',
+              },
+              {
+                key: 'history',
+                icon: <HistoryOutlined />,
+                label: '歷史記錄',
               },
               {
                 key: 'cost',
@@ -74,17 +84,12 @@ export default function Dashboard() {
               minHeight: 280,
             }}
           >
-            {selectedMenu === 'realtime' && (
-              <div>即時監控內容（待實作）</div>
-            )}
-            {selectedMenu === 'history' && (
-              <div>歷史分析內容（待實作）</div>
-            )}
-            {selectedMenu === 'cost' && (
-              <div>成本分析內容（待實作）</div>
-            )}
+            {selectedMenu === 'realtime' && <RealTimeMonitor />}
+            {selectedMenu === 'charts' && <UsageChart />}
+            {selectedMenu === 'history' && <HistoryTable />}
+            {selectedMenu === 'cost' && <CostAnalysis />}
             {selectedMenu === 'settings' && (
-              <div>設定內容（待實作）</div>
+              <div>設定頁面（待實作）</div>
             )}
           </Content>
         </Layout>
