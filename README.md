@@ -78,17 +78,19 @@ pnpm tsc --noEmit
 
 專案已整合 Supabase Auth，支援以下登入方式：
 
-- **Email + Password** — 傳統帳號密碼登入
+- **Google OAuth** — 使用 Google 帳號登入
+- **GitHub OAuth** — 使用 GitHub 帳號登入
 - **Magic Link** — 無密碼登入（Email 驗證連結）
 - **Session 持久化** — 自動保持登入狀態
 
-### 註冊新使用者
+### OAuth 設定（必要）
 
-1. 啟動應用程式並前往登入頁面
-2. 切換到「註冊」標籤
-3. 輸入顯示名稱、Email 和密碼
-4. 點擊「註冊」按鈕
-5. 系統會自動建立 profile 並登入
+登入功能需要先在 Supabase 中設定 OAuth providers：
+
+1. **Google OAuth** — [設定步驟請參考 OAUTH_SETUP.md](./OAUTH_SETUP.md#-google-oauth-設定)
+2. **GitHub OAuth** — [設定步驟請參考 OAUTH_SETUP.md](./OAUTH_SETUP.md#-github-oauth-設定)
+
+完整設定指南：[OAUTH_SETUP.md](./OAUTH_SETUP.md)
 
 ## Anthropic API 整合
 
