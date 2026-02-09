@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import dayjs from 'dayjs';
 import {
-  Subscription,
-  PlanLimits,
+  type Subscription,
+  type PlanLimits,
   PLAN_CONFIGS,
 } from '@/types/subscription';
 

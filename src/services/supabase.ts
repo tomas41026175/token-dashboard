@@ -41,7 +41,7 @@ export async function checkSupabaseConnection(): Promise<boolean> {
 }
 
 // 🆕 取得當前使用者 profile
-export async function getCurrentUserProfile() {
+export async function getCurrentUserProfile(): Promise<Database['public']['Tables']['profiles']['Row'] | null> {
   const {
     data: { user },
   } = await supabase.auth.getUser();

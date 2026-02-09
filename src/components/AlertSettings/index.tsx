@@ -17,7 +17,7 @@ import {
 import { useSettingsStore } from '@/store';
 import { useAlertCheck, requestNotificationPermission } from '@/hooks/useAlertCheck';
 import { useState } from 'react';
-import { PLAN_CONFIGS, PlanTier } from '@/types/subscription';
+import { PLAN_CONFIGS, type PlanTier } from '@/types/subscription';
 
 export default function AlertSettings() {
   const {

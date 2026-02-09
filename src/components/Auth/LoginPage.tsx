@@ -1,48 +1,42 @@
 import { useState } from 'react';
-import { Card, Form, Input, Button, Tabs, Alert } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import { Card, Button, Alert, Space, Typography, Divider, Form, Input } from 'antd';
+import { GoogleOutlined, GithubOutlined, MailOutlined } from '@ant-design/icons';
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+
+const { Title, Paragraph } = Typography;
 
 export default function LoginPage() {
-  const { signIn, signUp, sendMagicLink } = useAuth();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const { signInWithGoogle, signInWithGithub, sendMagicLink } = useAuth();
+  const [loading, setLoading] = useState<'google' | 'github' | 'magic' | null>(null);
   const [error, setError] = useState('');
   const [magicLinkSent, setMagicLinkSent] = useState(false);
 
-  const handleSignIn = async (values: { email: string; password: string }) => {
-    setLoading(true);
+  const handleGoogleSignIn = async () => {
+    setLoading('google');
     setError('');
     try {
-      await signIn(values.email, values.password);
-      navigate('/');
+      await signInWithGoogle();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : '登入失敗');
     } finally {
-      setLoading(false);
+      setLoading(null);
     }
   };
 
-  const handleSignUp = async (values: {
-    email: string;
-    password: string;
-    displayName?: string;
-  }) => {
-    setLoading(true);
+  const handleGithubSignIn = async () => {
+    setLoading('github');
     setError('');
     try {
-      await signUp(values.email, values.password, values.displayName);
-      navigate('/');
+      await signInWithGithub();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : '註冊失敗');
+      setError(err instanceof Error ? err.message : '登入失敗');
     } finally {
-      setLoading(false);
+      setLoading(null);
     }
   };
 
   const handleMagicLink = async (values: { email: string }) => {
-    setLoading(true);
+    setLoading('magic');
     setError('');
     try {
       await sendMagicLink(values.email);
@@ -50,7 +44,7 @@ export default function LoginPage() {
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : '發送失敗');
     } finally {
-      setLoading(false);
+      setLoading(null);
     }
   };
 
@@ -61,13 +55,18 @@ export default function LoginPage() {
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
-        background: '#f0f2f5',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       }}
     >
-      <Card style={{ width: 400 }}>
-        <h2 style={{ textAlign: 'center', marginBottom: 24 }}>
-          Token Dashboard
-        </h2>
+      <Card style={{ width: 450, boxShadow: '0 8px 16px rgba(0,0,0,0.15)' }}>
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <Title level={2} style={{ marginBottom: 8 }}>
+            Token Dashboard
+          </Title>
+          <Paragraph type="secondary">
+            Claude API Token 使用監控平台
+          </Paragraph>
+        </div>
 
         {error && (
           <Alert
@@ -76,7 +75,7 @@ export default function LoginPage() {
             type="error"
             closable
             onClose={() => setError('')}
-            style={{ marginBottom: 16 }}
+            style={{ marginBottom: 24 }}
           />
         )}
 
@@ -85,143 +84,82 @@ export default function LoginPage() {
             message="Magic Link 已發送"
             description="請檢查您的信箱，點擊連結登入。"
             type="success"
-            style={{ marginBottom: 16 }}
+            style={{ marginBottom: 24 }}
           />
         )}
 
-        <Tabs
-          items={[
-            {
-              key: 'signin',
-              label: '登入',
-              children: (
-                <Form onFinish={handleSignIn} layout="vertical">
-                  <Form.Item
-                    name="email"
-                    rules={[
-                      { required: true, message: '請輸入 Email' },
-                      { type: 'email', message: '請輸入有效的 Email' },
-                    ]}
-                  >
-                    <Input
-                      prefix={<MailOutlined />}
-                      placeholder="Email"
-                      size="large"
-                    />
-                  </Form.Item>
+        <Space direction="vertical" size="large" style={{ width: '100%' }}>
+          {/* OAuth 登入 */}
+          <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+            <Button
+              type="primary"
+              icon={<GoogleOutlined />}
+              size="large"
+              block
+              loading={loading === 'google'}
+              onClick={handleGoogleSignIn}
+              style={{
+                background: '#4285F4',
+                borderColor: '#4285F4',
+                height: 48,
+              }}
+            >
+              使用 Google 登入
+            </Button>
 
-                  <Form.Item
-                    name="password"
-                    rules={[{ required: true, message: '請輸入密碼' }]}
-                  >
-                    <Input.Password
-                      prefix={<LockOutlined />}
-                      placeholder="密碼"
-                      size="large"
-                    />
-                  </Form.Item>
+            <Button
+              icon={<GithubOutlined />}
+              size="large"
+              block
+              loading={loading === 'github'}
+              onClick={handleGithubSignIn}
+              style={{
+                background: '#24292e',
+                borderColor: '#24292e',
+                color: 'white',
+                height: 48,
+              }}
+            >
+              使用 GitHub 登入
+            </Button>
+          </Space>
 
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={loading}
-                    block
-                    size="large"
-                  >
-                    登入
-                  </Button>
-                </Form>
-              ),
-            },
-            {
-              key: 'signup',
-              label: '註冊',
-              children: (
-                <Form onFinish={handleSignUp} layout="vertical">
-                  <Form.Item
-                    name="displayName"
-                    rules={[{ required: true, message: '請輸入顯示名稱' }]}
-                  >
-                    <Input
-                      prefix={<UserOutlined />}
-                      placeholder="顯示名稱"
-                      size="large"
-                    />
-                  </Form.Item>
+          <Divider>或</Divider>
 
-                  <Form.Item
-                    name="email"
-                    rules={[
-                      { required: true, message: '請輸入 Email' },
-                      { type: 'email', message: '請輸入有效的 Email' },
-                    ]}
-                  >
-                    <Input
-                      prefix={<MailOutlined />}
-                      placeholder="Email"
-                      size="large"
-                    />
-                  </Form.Item>
+          {/* Magic Link */}
+          <Form onFinish={handleMagicLink} layout="vertical">
+            <Form.Item
+              name="email"
+              rules={[
+                { required: true, message: '請輸入 Email' },
+                { type: 'email', message: '請輸入有效的 Email' },
+              ]}
+            >
+              <Input
+                prefix={<MailOutlined />}
+                placeholder="Email"
+                size="large"
+              />
+            </Form.Item>
 
-                  <Form.Item
-                    name="password"
-                    rules={[
-                      { required: true, message: '請輸入密碼' },
-                      { min: 6, message: '密碼至少 6 個字元' },
-                    ]}
-                  >
-                    <Input.Password
-                      prefix={<LockOutlined />}
-                      placeholder="密碼"
-                      size="large"
-                    />
-                  </Form.Item>
+            <Button
+              type="default"
+              htmlType="submit"
+              loading={loading === 'magic'}
+              block
+              size="large"
+            >
+              發送 Magic Link
+            </Button>
+          </Form>
 
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={loading}
-                    block
-                    size="large"
-                  >
-                    註冊
-                  </Button>
-                </Form>
-              ),
-            },
-            {
-              key: 'magiclink',
-              label: 'Magic Link',
-              children: (
-                <Form onFinish={handleMagicLink} layout="vertical">
-                  <Form.Item
-                    name="email"
-                    rules={[
-                      { required: true, message: '請輸入 Email' },
-                      { type: 'email', message: '請輸入有效的 Email' },
-                    ]}
-                  >
-                    <Input
-                      prefix={<MailOutlined />}
-                      placeholder="Email"
-                      size="large"
-                    />
-                  </Form.Item>
-
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={loading}
-                    block
-                    size="large"
-                  >
-                    發送 Magic Link
-                  </Button>
-                </Form>
-              ),
-            },
-          ]}
-        />
+          <Paragraph
+            type="secondary"
+            style={{ textAlign: 'center', marginTop: 16, fontSize: 12 }}
+          >
+            首次登入將自動建立帳號
+          </Paragraph>
+        </Space>
       </Card>
     </div>
   );

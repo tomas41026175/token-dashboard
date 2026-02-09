@@ -1,17 +1,13 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session } from '@supabase/supabase-js';
+import type { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/services/supabase';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (
-    email: string,
-    password: string,
-    displayName?: string
-  ) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
+  signInWithGithub: () => Promise<void>;
   signOut: () => Promise<void>;
   sendMagicLink: (email: string) => Promise<void>;
 }
@@ -43,26 +39,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      },
     });
     if (error) throw error;
   };
 
-  const signUp = async (
-    email: string,
-    password: string,
-    displayName?: string
-  ) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
+  const signInWithGithub = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
       options: {
-        data: {
-          display_name: displayName,
-        },
+        redirectTo: `${window.location.origin}/`,
       },
     });
     if (error) throw error;
@@ -84,8 +75,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         session,
         loading,
-        signIn,
-        signUp,
+        signInWithGoogle,
+        signInWithGithub,
         signOut,
         sendMagicLink,
       }}
