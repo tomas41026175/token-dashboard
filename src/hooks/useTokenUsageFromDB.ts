@@ -32,11 +32,21 @@ export function useTokenUsageFromDB(params?: FetchTokenUsageParams) {
         return filterMockData(generateMockTokenUsage(30, 50), params);
       }
 
+      // 取得當前使用者
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       // 建立查詢
       let query = supabase
         .from('token_usage')
         .select('*')
         .order('created_at', { ascending: false });
+
+      // 🆕 加入 user_id 過濾（方案 B：如果有 user 就過濾）
+      if (user) {
+        query = query.or(`user_id.eq.${user.id},user_id.is.null`);
+      }
 
       // 依來源過濾
       if (sourceId) {

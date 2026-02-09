@@ -9,6 +9,35 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          id: string;
+          email: string;
+          display_name: string | null;
+          avatar_url: string | null;
+          anthropic_api_key: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          email: string;
+          display_name?: string | null;
+          avatar_url?: string | null;
+          anthropic_api_key?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          display_name?: string | null;
+          avatar_url?: string | null;
+          anthropic_api_key?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       sources: {
         Row: {
           id: string;
@@ -18,6 +47,7 @@ export interface Database {
           color: string;
           is_active: boolean;
           metadata: Json | null;
+          user_id: string | null;
         };
         Insert: {
           id?: string;
@@ -27,6 +57,7 @@ export interface Database {
           color?: string;
           is_active?: boolean;
           metadata?: Json | null;
+          user_id?: string | null;
         };
         Update: {
           id?: string;
@@ -36,6 +67,7 @@ export interface Database {
           color?: string;
           is_active?: boolean;
           metadata?: Json | null;
+          user_id?: string | null;
         };
       };
       token_usage: {
@@ -50,6 +82,7 @@ export interface Database {
           cost_usd: number;
           request_type: string | null;
           metadata: Json | null;
+          user_id: string | null;
         };
         Insert: {
           id?: string;
@@ -62,6 +95,7 @@ export interface Database {
           cost_usd: number;
           request_type?: string | null;
           metadata?: Json | null;
+          user_id?: string | null;
         };
         Update: {
           id?: string;
@@ -74,6 +108,7 @@ export interface Database {
           cost_usd?: number;
           request_type?: string | null;
           metadata?: Json | null;
+          user_id?: string | null;
         };
       };
       alert_settings: {
@@ -86,6 +121,7 @@ export interface Database {
           notification_enabled: boolean;
           created_at: string;
           updated_at: string;
+          user_id: string | null;
         };
         Insert: {
           id?: string;
@@ -96,6 +132,7 @@ export interface Database {
           notification_enabled?: boolean;
           created_at?: string;
           updated_at?: string;
+          user_id?: string | null;
         };
         Update: {
           id?: string;
@@ -106,6 +143,7 @@ export interface Database {
           notification_enabled?: boolean;
           created_at?: string;
           updated_at?: string;
+          user_id?: string | null;
         };
       };
     };

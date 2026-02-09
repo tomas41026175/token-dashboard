@@ -1,19 +1,38 @@
-import { Card, Form, InputNumber, Switch, Button, Space, Alert, Divider } from 'antd';
-import { BellOutlined, DollarOutlined, PercentageOutlined } from '@ant-design/icons';
+import {
+  Card,
+  Form,
+  InputNumber,
+  Switch,
+  Button,
+  Space,
+  Alert,
+  Divider,
+  Select,
+} from 'antd';
+import {
+  BellOutlined,
+  DollarOutlined,
+  PercentageOutlined,
+} from '@ant-design/icons';
 import { useSettingsStore } from '@/store';
 import { useAlertCheck, requestNotificationPermission } from '@/hooks/useAlertCheck';
 import { useState } from 'react';
+import { PLAN_CONFIGS, PlanTier } from '@/types/subscription';
 
 export default function AlertSettings() {
   const {
     defaultThresholdPercentage,
     defaultDailyLimitUsd,
+    defaultWeeklyLimitUsd,
     defaultMonthlyLimitUsd,
     notificationEnabled,
+    subscription,
     setThresholdPercentage,
     setDailyLimit,
+    setWeeklyLimit,
     setMonthlyLimit,
     setNotificationEnabled,
+    updateSubscription,
   } = useSettingsStore();
 
   const alertStatus = useAlertCheck();
@@ -24,6 +43,7 @@ export default function AlertSettings() {
     form.validateFields().then((values) => {
       setThresholdPercentage(values.thresholdPercentage);
       setDailyLimit(values.dailyLimit);
+      setWeeklyLimit(values.weeklyLimit);
       setMonthlyLimit(values.monthlyLimit);
       setNotificationEnabled(values.notificationEnabled);
     });
@@ -33,8 +53,17 @@ export default function AlertSettings() {
     form.setFieldsValue({
       thresholdPercentage: 80,
       dailyLimit: 10,
+      weeklyLimit: 30,
       monthlyLimit: 300,
       notificationEnabled: true,
+    });
+  };
+
+  const handlePlanChange = (tier: PlanTier) => {
+    const newPlan = PLAN_CONFIGS[tier];
+    updateSubscription({
+      ...subscription,
+      plan: newPlan,
     });
   };
 
@@ -71,6 +100,7 @@ export default function AlertSettings() {
           initialValues={{
             thresholdPercentage: defaultThresholdPercentage,
             dailyLimit: defaultDailyLimitUsd,
+            weeklyLimit: defaultWeeklyLimitUsd,
             monthlyLimit: defaultMonthlyLimitUsd,
             notificationEnabled: notificationEnabled,
           }}
@@ -109,6 +139,25 @@ export default function AlertSettings() {
           </Form.Item>
 
           <Form.Item
+            label="每週成本限額 (USD)"
+            name="weeklyLimit"
+            tooltip="每週 token 使用成本上限"
+            rules={[
+              { required: true, message: '請輸入每週限額' },
+              { type: 'number', min: 0, message: '必須大於 0' },
+            ]}
+          >
+            <InputNumber
+              style={{ width: '100%' }}
+              min={0}
+              step={5}
+              precision={2}
+              addonBefore={<DollarOutlined />}
+              placeholder="例：30.00"
+            />
+          </Form.Item>
+
+          <Form.Item
             label="每月成本限額 (USD)"
             name="monthlyLimit"
             tooltip="每月 token 使用成本上限"
@@ -124,6 +173,34 @@ export default function AlertSettings() {
               precision={2}
               addonBefore={<DollarOutlined />}
               placeholder="例：300.00"
+            />
+          </Form.Item>
+
+          <Divider />
+
+          {/* 訂閱方案選擇 */}
+          <Form.Item label="訂閱方案" tooltip="選擇您的訂閱方案，限額會自動更新">
+            <Select
+              value={subscription.plan.tier}
+              onChange={handlePlanChange}
+              style={{ width: '100%' }}
+            >
+              <Select.Option value="free">Free Plan</Select.Option>
+              <Select.Option value="pro">Pro Plan</Select.Option>
+              <Select.Option value="enterprise">Enterprise Plan</Select.Option>
+            </Select>
+
+            <Alert
+              message="方案限額"
+              description={
+                <ul style={{ marginBottom: 0, paddingLeft: 20 }}>
+                  <li>日限額: ${subscription.plan.limits.dailyUsd}</li>
+                  <li>週限額: ${subscription.plan.limits.weeklyUsd}</li>
+                  <li>月限額: ${subscription.plan.limits.monthlyUsd}</li>
+                </ul>
+              }
+              type="info"
+              style={{ marginTop: 8 }}
             />
           </Form.Item>
 

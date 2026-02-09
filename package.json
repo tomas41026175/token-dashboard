@@ -1,13 +1,24 @@
 {
   "name": "token-dashboard",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Claude API Token usage monitoring dashboard with real-time tracking, cost analysis, and alerts",
+  "author": "Tomas Chang",
+  "keywords": [
+    "claude",
+    "anthropic",
+    "token-tracking",
+    "dashboard",
+    "monitoring",
+    "analytics"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@ant-design/charts": "^2.6.7",
@@ -19,6 +30,7 @@
     "dayjs": "^1.11.19",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-router-dom": "^7.13.0",
     "zustand": "^5.0.11"
   },
   "devDependencies": {

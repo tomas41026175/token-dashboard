@@ -1,4 +1,4 @@
-import { Layout, Menu, Typography, Space, Tabs } from 'antd';
+import { Layout, Menu, Typography, Space, Tabs, Button, Dropdown } from 'antd';
 import {
   DashboardOutlined,
   LineChartOutlined,
@@ -7,8 +7,12 @@ import {
   HistoryOutlined,
   BellOutlined,
   DatabaseOutlined,
+  LogoutOutlined,
+  UserOutlined,
+  KeyOutlined,
 } from '@ant-design/icons';
 import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import SourceSelector from './SourceSelector';
 import RealTimeMonitor from './RealTimeMonitor';
 import UsageChart from '../UsageChart';
@@ -16,12 +20,22 @@ import HistoryTable from '../HistoryTable';
 import CostAnalysis from '../CostAnalysis';
 import AlertSettings from '../AlertSettings';
 import SourceManagement from '../SourceManagement';
+import ApiKeySettings from '../Settings/ApiKeySettings';
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
 
 export default function Dashboard() {
   const [selectedMenu, setSelectedMenu] = useState('realtime');
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Sign out failed:', error);
+    }
+  };
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -39,7 +53,38 @@ export default function Dashboard() {
             Token Dashboard
           </Title>
         </Space>
-        <SourceSelector />
+        <Space size="large">
+          <SourceSelector />
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: 'email',
+                  label: user?.email,
+                  disabled: true,
+                },
+                {
+                  type: 'divider',
+                },
+                {
+                  key: 'signout',
+                  label: '登出',
+                  icon: <LogoutOutlined />,
+                  onClick: handleSignOut,
+                },
+              ],
+            }}
+            placement="bottomRight"
+          >
+            <Button
+              type="text"
+              icon={<UserOutlined />}
+              style={{ color: 'white' }}
+            >
+              {user?.email}
+            </Button>
+          </Dropdown>
+        </Space>
       </Header>
 
       <Layout>
@@ -113,6 +158,15 @@ export default function Dashboard() {
                       </span>
                     ),
                     children: <SourceManagement />,
+                  },
+                  {
+                    key: 'apikey',
+                    label: (
+                      <span>
+                        <KeyOutlined /> API Key
+                      </span>
+                    ),
+                    children: <ApiKeySettings />,
                   },
                 ]}
               />

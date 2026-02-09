@@ -10,11 +10,24 @@ export function useSources() {
   return useQuery({
     queryKey: ['sources'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // 取得當前使用者
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      let query = supabase
         .from('sources')
         .select('*')
-        .eq('is_active', true)
-        .order('created_at', { ascending: true });
+        .eq('is_active', true);
+
+      // 🆕 加入 user_id 過濾（方案 B：如果有 user 就過濾）
+      if (user) {
+        query = query.or(`user_id.eq.${user.id},user_id.is.null`);
+      }
+
+      const { data, error } = await query.order('created_at', {
+        ascending: true,
+      });
 
       if (error) {
         console.warn('Failed to fetch sources from Supabase, using mock data');
