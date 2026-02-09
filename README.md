@@ -117,19 +117,21 @@ src/
 - [x] Realtime 訂閱功能
 - [x] 自動 fallback 到模擬資料
 
-### ⚙️ Phase 4: 進階功能（待開始）
+### ✅ Phase 4: 進階功能（已完成）
 
-- [ ] AlertSettings 元件
-- [ ] 警示邏輯與通知
-- [ ] 資料匯出功能
-- [ ] SourceManagement 元件
+- [x] AlertSettings 元件（警示設定頁面）
+- [x] 警示邏輯與通知（雙閾值 + 瀏覽器通知）
+- [x] 資料匯出功能（CSV/JSON/Markdown）
+- [x] SourceManagement 元件（來源管理介面）
+- [x] Dashboard 整合（Tabs 設定頁 + 匯出按鈕）
 
-### 🚀 Phase 5: 部署（待開始）
+### 🚀 Phase 5: 部署與優化（待開始）
 
 - [ ] Supabase Auth 設定
-- [ ] 環境變數設定
-- [ ] 部署到 Vercel
-- [ ] 響應式設計優化
+- [ ] 環境變數設定與部署指南
+- [ ] 部署到 Vercel/Netlify
+- [ ] 響應式設計優化（手機/平板）
+- [ ] 效能優化（code splitting、lazy loading）
 
 ## 模擬資料
 
