@@ -33,6 +33,43 @@ pnpm build
 pnpm tsc --noEmit
 ```
 
+## Supabase 設定（可選）
+
+專案已整合 Supabase，但**即使不設定也能正常運行**（會使用模擬資料）。
+
+### 設定步驟
+
+1. **建立 Supabase 專案**
+   - 前往 https://app.supabase.com
+   - 建立新專案
+
+2. **執行資料庫 Migration**
+   - 複製 `supabase/migrations/001_initial_schema.sql` 的內容
+   - 在 Supabase Dashboard → SQL Editor 執行
+
+3. **設定環境變數**
+   ```bash
+   cp .env.example .env
+   ```
+
+   編輯 `.env` 檔案，填入您的 Supabase 憑證：
+   ```
+   VITE_SUPABASE_URL=https://your-project.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-anon-key
+   ```
+
+   憑證可在 Supabase Dashboard → Settings → API 找到
+
+4. **重新啟動開發伺服器**
+   ```bash
+   pnpm dev
+   ```
+
+### 模擬資料 vs 真實資料
+
+- **未設定 Supabase**：自動使用模擬資料（30 天歷史記錄）
+- **已設定 Supabase**：從資料庫讀取真實資料，並支援 Realtime 即時更新
+
 ## 專案結構
 
 ```
@@ -64,20 +101,21 @@ src/
 - [x] 建立基礎 Layout（Header + Sider + Content）
 - [x] 實作 SourceSelector 元件
 
-### 🔄 Phase 2: 核心元件開發（進行中）
+### ✅ Phase 2: 核心元件開發（已完成）
 
-- [ ] RealTimeMonitor 元件
-- [ ] UsageChart 元件（折線圖、堆疊圖、圓餅圖）
-- [ ] HistoryTable 元件
-- [ ] CostAnalysis 元件
+- [x] RealTimeMonitor 元件
+- [x] UsageChart 元件（折線圖、堆疊圖、圓餅圖）
+- [x] HistoryTable 元件
+- [x] CostAnalysis 元件
 
-### 📋 Phase 3: 資料庫整合（待開始）
+### ✅ Phase 3: 資料庫整合（已完成）
 
-- [ ] Supabase 專案設定
-- [ ] 執行資料庫 migration
-- [ ] 建立 Supabase client
-- [ ] 實作 React Query hooks
-- [ ] 連接 Realtime 訂閱
+- [x] Supabase client 設定
+- [x] 資料庫 migration SQL
+- [x] React Query 整合
+- [x] API hooks (useSources, useTokenUsageFromDB)
+- [x] Realtime 訂閱功能
+- [x] 自動 fallback 到模擬資料
 
 ### ⚙️ Phase 4: 進階功能（待開始）
 

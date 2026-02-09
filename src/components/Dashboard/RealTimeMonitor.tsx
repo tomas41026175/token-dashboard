@@ -6,11 +6,15 @@ import {
   ThunderboltOutlined,
 } from '@ant-design/icons';
 import { useTimeRangeData } from '@/hooks/useFilteredTokenUsage';
+import { useRealtimeTokenUsage } from '@/hooks/useRealtimeTokenUsage';
 import { useSettingsStore } from '@/store';
 
 const { Text } = Typography;
 
 export default function RealTimeMonitor() {
+  // 啟用 Realtime 訂閱
+  useRealtimeTokenUsage();
+
   const { today, week, month } = useTimeRangeData();
   const { defaultMonthlyLimitUsd, defaultThresholdPercentage } =
     useSettingsStore();
